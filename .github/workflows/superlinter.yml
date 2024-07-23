@@ -20,9 +20,18 @@ jobs:
         timeout: 10
         max-score: 480
         setup-command: pip install pytest
+    - name: Process Test Results
+      id: process_results
+      run: |
+        # Get the test result
+        result="${{ steps.test_session6.outputs.result }}"
+        
+        # Round the result to the nearest integer
+        rounded_result=$(printf "%.0f" $result)
+        echo "ROUNDED_RESULT=$rounded_result" >> $GITHUB_ENV        
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
-        TEST_SESSION6_RESULTS: "${{steps.test_session6.outputs.result}}"
+        TEST_SESSION6_RESULTS: "${{env.ROUNDED_RESULT}}"
       with:
         runners: test_session6
